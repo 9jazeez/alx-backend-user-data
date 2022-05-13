@@ -5,6 +5,8 @@ import re
 from typing import List
 import logging
 
+PII_FIELDS = ("name", "phone", "password", "email", "ssn")
+
 def filter_datum(fields: List[str], redaction: str, 
 				 message: str, separator: str) -> str:
 	""" This function performs obfuscation """
@@ -12,6 +14,19 @@ def filter_datum(fields: List[str], redaction: str,
 		message = re.sub(f'{value}=.*?{separator}',
 					 f'{value}={redaction}{separator}', message)
 	return message
+
+def get_logger() -> logging.Logger:
+	""" A logger with filter format """
+	logger = logging.getLogger('user_data')
+	logger.propagate = False
+	logger.setLevel(logging.INFO)
+
+	str_handler = logging.StreamHandler()
+	str_handler.setLevel(logging.INFO)
+	str_handler.setFormatter(RedactingFormatter(list(PII_FIELDS)))
+	logger.addHandler(str_handler)
+
+	return logger
 
 
 class RedactingFormatter(logging.Formatter):
@@ -32,3 +47,4 @@ class RedactingFormatter(logging.Formatter):
 		record.msg = filter_datum(self.fields, self.REDACTION,
 								  record.getMessage(), self.SEPARATOR)
 		return super(RedactingFormatter, self).format(record)
+
