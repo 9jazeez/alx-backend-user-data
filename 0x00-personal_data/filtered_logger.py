@@ -4,6 +4,8 @@
 import re
 from typing import List
 import logging
+from os import environ
+import mysql.connector
 
 PII_FIELDS = ("name", "phone", "password", "email", "ssn")
 
@@ -28,6 +30,19 @@ def get_logger() -> logging.Logger:
 
 	return logger
 
+def get_db() -> mysql.connector.connection.MySQLConnection:
+	""" A function that connects to mysql db """
+	user_name = environ.get("PERSONAL_DATA_DB_USERNAME", "root")
+	pass_word = environ.get("PERSONAL_DATA_DB_PASSWORD", " ")
+	host_name = environ.get("PERSONAL_DATA_DB_HOST", "localhost")
+	db_name = environ.get("PERSONAL_DATA_DB_NAME")
+
+	conn = mysql.connector.connection.MySQLConnection(user=user_name,
+													  password=pass_word,
+													  host=host_name,
+													  database=db_name)
+	return conn
+
 
 class RedactingFormatter(logging.Formatter):
 	""" Redacting Formatter class
@@ -47,4 +62,26 @@ class RedactingFormatter(logging.Formatter):
 		record.msg = filter_datum(self.fields, self.REDACTION,
 								  record.getMessage(), self.SEPARATOR)
 		return super(RedactingFormatter, self).format(record)
+
+def main():
+	""" This function obtains a database connection using get_db
+	then retrieves all rows in the users table and display each
+	row under a filtered format. """
+	
+	db = get_db()
+	cursor = db.cursor()
+	cursor.execute("SELECT * FROM users;")
+	fields = [i[0] for i in cursor.description]
+	
+	logger = get_logger()
+
+	for row in cursor:
+		row_str = ''.join(f'{val}={str(r)};' for r,  val in zip(row, fields)
+		logger.info(row_str.strip())
+
+	cursor.close()
+	db.close()
+
+if __name__ == '__main__':
+	main()
 
