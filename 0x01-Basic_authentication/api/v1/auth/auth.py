@@ -27,9 +27,12 @@ class Auth():
 			return True
 
 	def authorization_header(self, request=None) -> str:
-		""" auth using flask requst object """
-
-		return None
+		""" header_auth using flask requst object """
+		if request is None:
+			return None
+		if not request.headers.get("Authorization"):
+			return None
+		return request.headers.get("Authorization")
 
 	def current_user(self, request=None) -> TypeVar('user'):
 		""" For current usage checking """
