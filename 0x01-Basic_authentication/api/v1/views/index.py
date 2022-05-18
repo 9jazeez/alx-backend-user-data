@@ -18,6 +18,12 @@ def unauthorized() -> str:
 	""" for testing unauth 401 error handler """
 	abort(401)
 
+@app_views.route('/forbidden', methods=['GET'], strict_slashes=False)
+def forbidden() -> str:
+	""" For testing an endpoint for a forbidden user
+	even if user is verified """
+	abort(403)
+
 
 @app_views.route('/stats/', strict_slashes=False)
 def stats() -> str:
