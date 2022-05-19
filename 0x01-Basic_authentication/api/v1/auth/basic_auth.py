@@ -78,7 +78,7 @@ class BasicAuth(Auth):
 			User instance """
 		try:
 			header = self.authorization_header(request)
-			base64H = self.extra_base64_authorization_header(header)
+			base64H = self.extract_base64_authorization_header(header)
 			decodeVal = self.decode_base64_authorization_header(base64H)
 			credentials = self.extract_user_credentials(decodeVal)
 			user = self.user_object_from_credentials(credentials[0],
