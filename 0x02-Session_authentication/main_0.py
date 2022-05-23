@@ -1,23 +1,22 @@
 #!/usr/bin/env python3
-""" Main 6
+""" Main 0
 """
 import base64
 from api.v1.auth.basic_auth import BasicAuth
 from models.user import User
 
 """ Create a user test """
-user_email = "Fashmd@gmail.com"
-user_clear_pwd = "H0lberto3RR24!"
-first = "Fash"
-last = "Funmi"
+fname = "Tola"
+lname = "Oguntola"
+user_email = "Tola_bob@hbtn.io"
+user_clear_pwd = "H0lbertonSchool98!"
+
 user = User()
 user.email = user_email
 user.password = user_clear_pwd
-user.first_name = first
-user.last_name = last
-
-print("New user:{} with {} / {}".format(user.first_name,
-										user.id, user.display_name()))
+user.first_name = fname
+user.last_name = lname
+print("New user: {}".format(user.id))
 user.save()
 
 basic_clear = "{}:{}".format(user_email, user_clear_pwd)

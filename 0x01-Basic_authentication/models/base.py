@@ -82,7 +82,7 @@ class Base():
         for obj_id, obj in DATA[s_class].items():
             objs_json[obj_id] = obj.to_json(True)
 
-        with open(file_path, 'w') as f:
+        with open(file_path, 'a') as f:
             json.dump(objs_json, f)
 
     def save(self):

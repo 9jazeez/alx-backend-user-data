@@ -37,7 +37,7 @@ def unauthorized(error) -> str:
     """ Unauthorized error """
 
     return jsonify({
-                    "error": "Unauthorized"
+                     "error": "Unauthorized"
                    }), 401
 
 
@@ -47,7 +47,7 @@ def forbidden(error) -> str:
     authenticated """
 
     return jsonify({
-                    "error": "Forbidden"
+                     "error": "Forbidden"
                    }), 403
 
 
@@ -66,6 +66,7 @@ def before_request() -> str:
         abort(401)
     if auth.current_user(request) is None:
         abort(403)
+    request.current_user = auth.current_user(request)
 
 
 if __name__ == "__main__":
