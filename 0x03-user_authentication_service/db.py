@@ -44,8 +44,7 @@ class DB:
         """Find a user method """
         for name, val in kwargs.items():
             if name in vars(User):
-                query = self._session.query(User).filter_by(
-                        **{name: val}).first()
+                query = self._session.query(User).filter_by(**{name: val}).first()
                 if query is None:
                     raise NoResultFound
                 return query
