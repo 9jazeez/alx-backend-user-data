@@ -18,7 +18,7 @@ class DB:
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db",
+        self._engine = create_engine("mysql://la2:afusat123#@0.0.0.0/hbtn1",
                                      echo=False)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
@@ -44,9 +44,21 @@ class DB:
         """Find a user method """
         for name, val in kwargs.items():
             if name in vars(User):
-                query = self._session.query(User).filter_by(email=val).first()
+                query = self._session.query(User).filter_by(
+                        **{name: val}).first()
                 if query is None:
                     raise NoResultFound
                 return query
             else:
                 raise InvalidRequestError
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """ Updates a user with user_id """
+        query = self.find_user_by(id=user_id)
+        if query is None:
+            raise NoResultFound
+        for name, val in kwargs.items():
+            setattr(query, name, val)
+        self._session.add(query)
+        self._session.commit()
+        return None
